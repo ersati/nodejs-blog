@@ -52,7 +52,9 @@ app.post('/compose', function(req, res){
 })
 
 
-
+app.get('/posts/:name', function(req,res){
+  console.log(req.params.name)
+})
 
 
 
