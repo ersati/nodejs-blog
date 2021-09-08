@@ -12,35 +12,37 @@ const app = express();
 
 app.set('view engine', 'ejs');
 
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({
+  extended: true
+}));
 app.use(express.static("public"));
 
 
 const postArr = [];
 
-app.get('/', function (req,res){
+app.get('/', function (req, res) {
   res.render('home', {
     text: homeStartingContent,
     posts: postArr
   })
 })
-app.get('/about', function (req,res){
+app.get('/about', function (req, res) {
   res.render('about', {
     text: aboutContent
   })
 })
-app.get('/contact', function (req,res){
+app.get('/contact', function (req, res) {
   res.render('contact', {
     text: contactContent
   })
 })
 
-app.get('/compose', function (req,res){
+app.get('/compose', function (req, res) {
   res.render('compose', {
     text: contactContent
   })
 })
-app.post('/compose', function(req, res){
+app.post('/compose', function (req, res) {
   const postHeader = req.body.header;
   const text = req.body.post
   const postInfo = {
@@ -48,19 +50,22 @@ app.post('/compose', function(req, res){
     info: text,
   }
   postArr.push(postInfo)
-    res.redirect('/')
+  res.redirect('/')
 })
 
 
-app.get('/posts/:name', function(req,res){
-  const param = _.lowerCase(req.params.name);
-console.log(param)
-  const found = postArr.find(el => {
-    console.log(_.lowerCase(el.title), param)
-    _.lowerCase(el.title) == param})
-  if(found){
+app.get('/posts/:name', function (req, res) {
+  const param = req.params.name;
+  console.log(param)
+  const found = postArr.find(el =>  _.lowerCase(el.title) === _.lowerCase(param))
+  if (found) {
     console.log('Match found')
-  }else{
+    res.render('post', {
+      header: found.title,
+      content: found.info,
+    })
+  } else {
+    res.redirect('/')
     console.log('Match doesnt exist')
   }
   console.log(found)
@@ -70,6 +75,6 @@ console.log(param)
 
 
 
-app.listen(3000, function() {
+app.listen(3000, function () {
   console.log("Server started on port 3000");
 });
