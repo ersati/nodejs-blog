@@ -5,11 +5,13 @@
 
 <% posts.forEach(item => { %>
     <a href="posts/<%=item.title%>"><h3><%=item.title%></h3></a>
-   <% if(item.info.length > 30){ %>
-        <p><%=item.info.substring(0, 30) + '...'%> <a href="posts/<%=item.title%>">read more</a></p>
+   <% if(item.content.length > 30){ %>
+        <p><%=item.content.substring(0, 30) + '...'%> <a href="posts/<%=item.title%>">read more</a></p>
    <% } else { %>
-        <p><%=item.info%> </p>
+        <p><%=item.content%> </p>
    <% } %>
    
     <%})%>
+
+<a href="compose">Add new articles</a>
 <%- include('partials/footer') %>

@@ -32,9 +32,15 @@ const Post = mongoose.model("Post", postSchema);
 const postArr = [];
 
 app.get('/', function (req, res) {
-  res.render('home', {
-    text: homeStartingContent,
-    posts: postArr
+  Post.find({}, function(err, posts){
+    if(!err){
+      res.render('home', {
+        text: homeStartingContent,
+        posts: posts
+      })
+    } else {
+      throw console.log(err)
+    }
   })
 })
 app.get('/about', function (req, res) {
@@ -61,35 +67,31 @@ app.post('/compose', function (req, res) {
     content: text
   })
   post.save()
-  const postInfo = {
-    title: postHeader,
-    info: text,
-  }
-
-  postArr.push(postInfo)
   res.redirect('/')
 })
 
 
 app.get('/posts/:name', function (req, res) {
-  const param = req.params.name;
+  const param = _.lowerCase(req.params.name);
   console.log(param)
-  const found = postArr.find(el =>  _.lowerCase(el.title) === _.lowerCase(param))
-  if (found) {
+
+
+
+Post.find({title:param}, function(err, post){
+  if(!err){
+   const [{id, title, content}] = post
     console.log('Match found')
     res.render('post', {
-      header: found.title,
-      content: found.info,
+    header: title,
+      content,
     })
-  } else {
+  }else{
     res.redirect('/')
     console.log('Match doesnt exist')
   }
-  console.log(found)
 })
 
-
-
+})
 
 
 app.listen(3000, function () {
